@@ -1,13 +1,10 @@
 package com.driver.models;
 
-import net.bytebuddy.dynamic.loading.InjectionClassLoader;
-
 import javax.persistence.*;
 
 @Entity
-@Table(name="images")
+@Table(name = "Image")
 public class Image{
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -18,11 +15,17 @@ public class Image{
     @JoinColumn
     private Blog blog;
 
-
     public Image() {
     }
 
-    public Image(String description, String dimensions, Blog blog) {
+    public Image(Blog blog, String description, String dimensions) {
+        this.description = description;
+        this.dimensions = dimensions;
+        this.blog = blog;
+    }
+
+    public Image(int id, String description, String dimensions, Blog blog) {
+        this.id = id;
         this.description = description;
         this.dimensions = dimensions;
         this.blog = blog;
@@ -34,21 +37,6 @@ public class Image{
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public Image(int id, String description, String dimensions, Blog blog) {
-        this.id = id;
-        this.description = description;
-        this.dimensions = dimensions;
-        this.blog = blog;
-    }
-
-    public Blog getBlog() {
-        return blog;
-    }
-
-    public void setBlog(Blog blog) {
-        this.blog = blog;
     }
 
     public String getDescription() {
@@ -65,5 +53,13 @@ public class Image{
 
     public void setDimensions(String dimensions) {
         this.dimensions = dimensions;
+    }
+
+    public Blog getBlog() {
+        return blog;
+    }
+
+    public void setBlog(Blog blog) {
+        this.blog = blog;
     }
 }

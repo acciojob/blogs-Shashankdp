@@ -15,41 +15,47 @@ public class ImageService {
     @Autowired
     ImageRepository imageRepository2;
 
-    public Image addImage(Integer blogId, String description, String dimensions){
+    public Image addImage(Integer blogId, String description, String dimensions) {
         //add an image to the blog
-        Blog blog=blogRepository2.findById(blogId).get();
-        Image image=new Image(description,dimensions,blog);
+//        if(!blogRepository2.findById(blogId).isPresent()) {
+//            throw new Exception();
+//        }
+        Blog blog = blogRepository2.findById(blogId).get();
+        Image image = new Image(blog,description,dimensions);
         blog.getImageList().add(image);
         blogRepository2.save(blog);
         return image;
+        //Here I am not explicitly adding image in image-repository because due to cascading effect
     }
 
     public void deleteImage(Integer id){
-
         imageRepository2.deleteById(id);
     }
 
     public int countImagesInScreen(Integer id, String screenDimensions) {
         //Find the number of images of given dimensions that can fit in a screen having `screenDimensions`
+        String [] scrarray = screenDimensions.split("X"); //A=Length   X    B=Breadth
+//        if(!imageRepository2.findById(id).isPresent()){
+//            throw new Exception();
+//        }
+        Image image = imageRepository2.findById(id).get();
 
-        String []scrarray=screenDimensions.split("X"); // A=length  X  B=Breadth
+        String imageDimensions = image.getDimensions();
+        String [] imgarray = imageDimensions.split("X");
 
-        Image image=imageRepository2.findById(id).get();
+        int scrl = Integer.parseInt(scrarray[0]); //A -- > integer
+        int scrb = Integer.parseInt(scrarray[1]); //B -- > integer
 
-        String imageDimensions=image.getDimensions();
-        String []imgarray=imageDimensions.split("X");
+        int imgl = Integer.parseInt(imgarray[0]); //A -- > integer
+        int imgb = Integer.parseInt(imgarray[1]); //B -- > integer
 
-        int scr1=Integer.parseInt(scrarray[0]); // A ----> integer
-        int scrb=Integer.parseInt(scrarray[1]); // B ----> integer
+        return no_Images(scrl,scrb,imgl,imgb);
 
-        int img1=Integer.parseInt(imgarray[0]); // A ----> integer
-        int imgb=Integer.parseInt(imgarray[1]); // B ----> integer
-
-        return no_Images(scr1,scrb,img1,imgb);
     }
-    private int no_Images(int scr1,int scrb,int img1,int imgb){
-        int lenC=scr1/img1;
-        int lenB=scrb/imgb;
+
+    private int no_Images(int scrl, int scrb, int imgl, int imgb) {
+        int lenC = scrl/imgl; //
+        int lenB = scrb/imgb;
         return lenC*lenB;
     }
 }
